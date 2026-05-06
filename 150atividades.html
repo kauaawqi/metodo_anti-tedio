@@ -91,18 +91,73 @@
 
   /* ── TOPBAR ── */
   .topbar {
-    background: var(--red);
+    background: linear-gradient(90deg, #7b0000 0%, #c62828 40%, #b71c1c 60%, #7b0000 100%);
+    background-size: 200% 100%;
+    animation: topbarShift 4s ease-in-out infinite;
     color: #fff;
     text-align: center;
     padding: 10px 20px;
-    font-weight: 800;
-    font-size: .92rem;
-    letter-spacing: .3px;
     position: sticky;
     top: 0;
     z-index: 100;
+    box-shadow: 0 2px 12px rgba(183,28,28,0.5);
   }
-  .topbar span { color: var(--yellow); }
+  @keyframes topbarShift {
+    0%,100% { background-position: 0% 50%; }
+    50%      { background-position: 100% 50%; }
+  }
+  .topbar-inner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .topbar-copy {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: .9rem;
+    letter-spacing: .2px;
+    line-height: 1.4;
+  }
+  .topbar-copy span { color: var(--yellow); }
+  .topbar-timer {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(255,215,0,0.4);
+    border-radius: 8px;
+    padding: 4px 12px;
+    flex-shrink: 0;
+  }
+  .timer-icon {
+    font-size: 1rem;
+    animation: timerPulse 1s ease-in-out infinite;
+  }
+  @keyframes timerPulse {
+    0%,100% { opacity: 1; transform: scale(1); }
+    50%      { opacity: .6; transform: scale(1.15); }
+  }
+  .timer-digits {
+    font-family: 'Fredoka One', sans-serif;
+    font-size: 1.1rem;
+    color: var(--yellow);
+    letter-spacing: 2px;
+    min-width: 52px;
+    text-align: center;
+  }
+  .timer-label {
+    font-size: .68rem;
+    font-weight: 800;
+    color: rgba(255,255,255,0.75);
+    letter-spacing: .5px;
+    text-transform: uppercase;
+  }
+  @media (max-width: 500px) {
+    .topbar-copy { font-size: .78rem; }
+    .topbar-inner { gap: 8px; }
+  }
 
   /* ── HERO ── */
   .hero {
@@ -626,7 +681,18 @@
 
 <div id="notif-container"></div>
 <div class="topbar">
-  🔥 LANÇAMENTO: Preço especial válido só até <span id="topbar-deadline"></span> — <span>depois volta para R$37,90</span>
+  <div class="topbar-inner">
+    <div class="topbar-copy">
+      🔥 <span>ATENÇÃO:</span> Últimos minutos com oferta especial — <span>depois sobe para R$37,90!</span>
+    </div>
+    <div class="topbar-timer">
+      <span class="timer-icon">⏳</span>
+      <div>
+        <div class="timer-digits" id="countdownDisplay">10:00</div>
+        <div class="timer-label">restantes</div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- HERO -->
@@ -860,6 +926,15 @@
 
     </div>
 
+    <!-- ORDER BUMP -->
+    <div class="order-bump" style="max-width:720px;margin:28px auto 0;">
+      <div class="order-bump-icon">🌧️</div>
+      <div>
+        <h4>OFERTA ESPECIAL — Adicione ao seu pedido por apenas <strong>+R$9,90</strong></h4>
+        <p><strong>Pack Dias de Chuva & Feriados:</strong> 30 atividades temáticas para quando vocês ficam em casa o dia todo + 20 Caça-Palavras e Passatempos prontos para imprimir. Disponível apenas nessa tela.</p>
+      </div>
+    </div>
+
   </div>
 </section>
 
@@ -912,10 +987,10 @@
   <div class="container">
     <h2>Seu filho merece mais do que uma tela.<br><em>E você merece paz.</em></h2>
     <p>Comece hoje por menos do que um café. Acesso imediato, sem risco.</p>
-    <a href="#pricing" class="btn-cta pulse">
-        ✅ Quero as 150 Atividades Agora!
-      </a>
-    <p style="color:rgba(255,255,255,0.55);margin-top:16px;font-size:.82rem;">🔒 Pagamento 100% seguro · Pix e cartão  · Garantia de 7 dias</p>
+    <a href="https://seguroamplopay.com/checkout/cmot3bory07lb1yqlgr91dwo5?offer=NVTLJLD" target="_blank" class="btn-cta pulse" style="font-size:1.3rem;">
+      ✅ Quero Começar Agora!
+    </a>
+    <p style="color:rgba(255,255,255,0.55);margin-top:16px;font-size:.82rem;">🔒 Pagamento 100% seguro · Pix, cartão e boleto · Garantia de 7 dias</p>
   </div>
 </section>
 
@@ -925,66 +1000,65 @@
 </footer>
 
 <!-- UPSELL POPUP -->
-<div id="upsell-overlay" style="display:none;position:fixed;inset:0;background:rgba(6,28,60,0.75);z-index:9999;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px);">
+<div id="upsell-overlay" style="display:none;position:fixed;inset:0;background:rgba(6,28,60,0.75);z-index:9999;align-items:center;justify-content:center;padding:12px;backdrop-filter:blur(4px);overflow-y:auto;">
   <div id="upsell-modal" style="
     background:#fff;
-    border-radius:28px;
-    max-width:480px;
+    border-radius:20px;
+    max-width:380px;
     width:100%;
+    max-height:90vh;
+    overflow-y:auto;
     position:relative;
-    box-shadow:0 24px 80px rgba(0,0,0,0.35);
-    overflow:hidden;
+    box-shadow:0 16px 48px rgba(0,0,0,0.3);
     transform:scale(0.85);
     opacity:0;
     transition:transform .3s cubic-bezier(.34,1.56,.64,1), opacity .25s ease;
   ">
     <!-- Header -->
-    <div style="background:linear-gradient(135deg,#0d3b7a 0%,#1565c0 100%);padding:28px 28px 22px;text-align:center;position:relative;">
-      <div style="font-size:2.4rem;margin-bottom:6px;">🎉</div>
+    <div style="background:linear-gradient(135deg,#0d3b7a 0%,#1565c0 100%);padding:18px 20px 14px;text-align:center;position:relative;">
       <div style="
         display:inline-block;
         background:#ffd600;
         color:#0d3b7a;
         font-family:'Fredoka One',sans-serif;
-        font-size:.82rem;
-        padding:4px 16px;
+        font-size:.72rem;
+        padding:3px 12px;
         border-radius:50px;
         letter-spacing:1px;
-        margin-bottom:12px;
+        margin-bottom:8px;
         text-transform:uppercase;
-      ">Oferta exclusiva — só aparece uma vez</div>
-      <h2 style="font-family:'Fredoka One',sans-serif;color:#fff;font-size:1.55rem;line-height:1.25;margin:0;">
-        Espera! Antes de ir…<br>temos uma oferta especial para você
+      ">🎉 Oferta exclusiva — só aparece uma vez</div>
+      <h2 style="font-family:'Fredoka One',sans-serif;color:#fff;font-size:1.2rem;line-height:1.25;margin:0;">
+        Espera! Temos uma oferta<br>especial para você
       </h2>
     </div>
 
     <!-- Body -->
-    <div style="padding:26px 28px 10px;">
-      <p style="font-size:1rem;font-weight:700;color:#0d3b7a;text-align:center;margin-bottom:18px;line-height:1.5;">
-        Que tal levar o <strong>Plano Família Ativa completo</strong><br>com tudo incluso por um preço que nunca mais vai aparecer?
+    <div style="padding:16px 18px 10px;">
+      <p style="font-size:.88rem;font-weight:700;color:#0d3b7a;text-align:center;margin-bottom:12px;line-height:1.45;">
+        Leve o <strong>Plano Família Ativa completo</strong> por um preço que nunca mais vai aparecer
       </p>
 
       <!-- O que vem -->
-      <div style="background:#f0f7ff;border-radius:16px;padding:16px 20px;margin-bottom:20px;">
-        <div style="font-weight:800;color:#0d3b7a;font-size:.9rem;margin-bottom:10px;">✦ Tudo que você leva no Família Ativa:</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;">
-          <div style="font-size:.84rem;font-weight:700;color:#333;">✅ 150 atividades</div>
-          <div style="font-size:.84rem;font-weight:700;color:#333;">✅ +50 bônus</div>
-          <div style="font-size:.84rem;font-weight:700;color:#333;">✅ Plano de 7 dias</div>
-          <div style="font-size:.84rem;font-weight:700;color:#333;">✅ Sem material</div>
-          <div style="font-size:.84rem;font-weight:700;color:#333;">✅ Guia de introdução</div>
-          <div style="font-size:.84rem;font-weight:700;color:#333;">✅ Atualizações mensais</div>
+      <div style="background:#f0f7ff;border-radius:12px;padding:10px 14px;margin-bottom:14px;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;">
+          <div style="font-size:.78rem;font-weight:700;color:#333;">✅ 150 atividades</div>
+          <div style="font-size:.78rem;font-weight:700;color:#333;">✅ +50 bônus</div>
+          <div style="font-size:.78rem;font-weight:700;color:#333;">✅ Plano de 7 dias</div>
+          <div style="font-size:.78rem;font-weight:700;color:#333;">✅ Sem material</div>
+          <div style="font-size:.78rem;font-weight:700;color:#333;">✅ Guia introdução</div>
+          <div style="font-size:.78rem;font-weight:700;color:#333;">✅ Atualizações mensais</div>
         </div>
       </div>
 
       <!-- Preço -->
-      <div style="text-align:center;margin-bottom:22px;">
-        <div style="font-size:.88rem;color:#999;text-decoration:line-through;margin-bottom:2px;">De R$29,90</div>
-        <div style="font-family:'Fredoka One',sans-serif;font-size:3rem;color:#0d3b7a;line-height:1;">
-          <sup style="font-size:1.2rem;vertical-align:top;margin-top:10px;display:inline-block;">R$</sup>19<span style="font-size:1.3rem;">,90</span>
+      <div style="text-align:center;margin-bottom:14px;">
+        <div style="font-size:.8rem;color:#999;text-decoration:line-through;">De R$29,90</div>
+        <div style="font-family:'Fredoka One',sans-serif;font-size:2.4rem;color:#0d3b7a;line-height:1.1;">
+          <sup style="font-size:1rem;vertical-align:top;margin-top:6px;display:inline-block;">R$</sup>19<span style="font-size:1.1rem;">,90</span>
         </div>
-        <div style="background:#e8f5e9;color:#2e7d32;font-weight:800;font-size:.82rem;padding:5px 14px;border-radius:50px;display:inline-block;margin-top:6px;">
-          💰 Você economiza R$10,00 agora
+        <div style="background:#e8f5e9;color:#2e7d32;font-weight:800;font-size:.75rem;padding:3px 12px;border-radius:50px;display:inline-block;margin-top:4px;">
+          💰 Você economiza R$10,00
         </div>
       </div>
 
@@ -996,12 +1070,12 @@
           background:linear-gradient(135deg,#ffd600 0%,#ffab00 100%);
           color:#0d3b7a;
           font-family:'Fredoka One',sans-serif;
-          font-size:1.2rem;
-          padding:17px 28px;
+          font-size:1rem;
+          padding:13px 20px;
           border-radius:50px;
           text-decoration:none;
-          box-shadow:0 6px 24px rgba(255,171,0,0.4);
-          margin-bottom:10px;
+          box-shadow:0 4px 16px rgba(255,171,0,0.4);
+          margin-bottom:8px;
           animation: pulse 2.2s ease-in-out infinite;
         ">
         🏆 SIM! Quero o Família Ativa por R$19,90
@@ -1009,9 +1083,9 @@
       <button onclick="goEssencial()"
         style="
           display:block;width:100%;background:none;border:none;
-          color:#999;font-family:'Nunito',sans-serif;font-size:.82rem;
-          font-weight:700;cursor:pointer;padding:10px;
-          text-decoration:underline;margin-bottom:4px;
+          color:#aaa;font-family:'Nunito',sans-serif;font-size:.78rem;
+          font-weight:700;cursor:pointer;padding:8px;
+          text-decoration:underline;margin-bottom:2px;
         ">
         Não, prefiro só o Essencial por R$9,90
       </button>
@@ -1019,9 +1093,9 @@
 
     <!-- Close X -->
     <button onclick="closePopup()" style="
-      position:absolute;top:14px;right:16px;
+      position:absolute;top:10px;right:12px;
       background:rgba(255,255,255,0.15);border:none;
-      color:#fff;font-size:1.2rem;width:32px;height:32px;
+      color:#fff;font-size:1rem;width:28px;height:28px;
       border-radius:50%;cursor:pointer;display:flex;
       align-items:center;justify-content:center;line-height:1;
     ">✕</button>
@@ -1068,14 +1142,43 @@
   });
 
 
-  // ── DYNAMIC DEADLINE DATE (hoje) ──
+  // ── COUNTDOWN TIMER 10 MIN ──
   (function() {
-    const days = ['domingo','segunda-feira','terça-feira','quarta-feira','quinta-feira','sexta-feira','sábado'];
-    const months = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
-    const now = new Date();
-    const label = `hoje, ${days[now.getDay()]} dia ${now.getDate()} de ${months[now.getMonth()]}`;
-    const el = document.getElementById('topbar-deadline');
-    if (el) el.textContent = label;
+    const KEY = 'antitedio_timer_end';
+    const DURATION = 10 * 60; // 10 minutes in seconds
+    const display = document.getElementById('countdownDisplay');
+    if (!display) return;
+
+    // Persist end time in sessionStorage so refresh keeps counting
+    let endTime = parseInt(sessionStorage.getItem(KEY) || '0');
+    if (!endTime || endTime < Date.now()) {
+      endTime = Date.now() + DURATION * 1000;
+      sessionStorage.setItem(KEY, endTime);
+    }
+
+    function update() {
+      const remaining = Math.max(0, Math.floor((endTime - Date.now()) / 1000));
+      const m = String(Math.floor(remaining / 60)).padStart(2, '0');
+      const s = String(remaining % 60).padStart(2, '0');
+      display.textContent = m + ':' + s;
+
+      // Flash red when under 2 minutes
+      if (remaining <= 120) {
+        display.style.color = '#ff5252';
+        display.style.animation = 'timerPulse .6s ease-in-out infinite';
+      }
+
+      // When expired — reset and restart (keeps pressure on)
+      if (remaining === 0) {
+        endTime = Date.now() + DURATION * 1000;
+        sessionStorage.setItem(KEY, endTime);
+        display.style.color = '';
+        display.style.animation = '';
+      }
+    }
+
+    update();
+    setInterval(update, 1000);
   })();
 
   // ── PURCHASE NOTIFICATIONS ──
